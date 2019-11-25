@@ -22,17 +22,15 @@ def load_graph(fd):
     denotes a directed edge (link) from the first URL to the second.
     """
     # Iterate through the file line by line
-    websites={}
+    websites={}#dictionary of websites: Key is a link, value is a list of links.
     for line in fd:
         # And split each line into two URLs
         node, target = line.split()
-        if node not in websites.keys():
+        if node not in websites.keys():#this checks to add the node to the dictionary
             websites[node]=[target]
-        else:
-            #print("the type of value is",type(websites[node]))
+        else:#if the node exists add the next value to the list of values
             (websites[node].append(target))
-    return websites
-        #raise RuntimeError("This function is not implemented yet.")
+    return websites#return the dictionary of connections
 
 
 def print_stats(graph):
