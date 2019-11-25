@@ -47,7 +47,7 @@ class Progress:
         sec = time.time()-self.start_time
         # eta = self.total/self.counter*sec-sec if self.counter else 0
         percent = 100*self.counter/self.total
-        title = f'{self.title} ({percent:.0f}% {sec//60:02.0f}:{sec%60:02.0f}) '
+        title = self.title
         if len(title) >= self.width:
             raise ValueError("Progress bar does not fit width. Shorten title of increase width.")
         bar_width = self.width - (len(title)) - 3

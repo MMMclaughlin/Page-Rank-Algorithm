@@ -16,17 +16,23 @@ def load_graph(fd):
 
     Called for example with
 
-    >>> graph = load_graph(open("web.txt"))
 
     the function parses the input file and returns a graph representation.
     Each line in the file contains two white space seperated URLs and
     denotes a directed edge (link) from the first URL to the second.
     """
     # Iterate through the file line by line
+    websites={}
     for line in fd:
         # And split each line into two URLs
         node, target = line.split()
-        raise RuntimeError("This function is not implemented yet.")
+        if node not in websites.keys():
+            websites[node]=[target]
+        else:
+            #print("the type of value is",type(websites[node]))
+            (websites[node].append(target))
+    return websites
+        #raise RuntimeError("This function is not implemented yet.")
 
 
 def print_stats(graph):
@@ -34,7 +40,7 @@ def print_stats(graph):
         raise RuntimeError("This function is not implemented yet.")
 
 
-def stochastic_page_rank(graph, n_iter=1_000_000, n_steps=100):
+def stochastic_page_rank(graph, n_iter=1000000, n_steps=100):
     """Stochastic PageRank estimation
 
     Parameters:
@@ -69,6 +75,7 @@ def distribution_page_rank(graph, n_iter=100):
 
 
 def main():
+    print("this is main")
     # Load the web structure from file
     web = load_graph(open(WEB_DATA))
 
@@ -91,8 +98,8 @@ def main():
 
     # Show top 20 pages with their page rank and time it took to compute
     top = sorted(ranking.items(), key=lambda item: item[1], reverse=True)
-    print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
-    print(f'Calculation took {time_stochastic:.2f} seconds.\n')
+    #print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
+    #print(f'Calculation took {time_stochastic:.2f} seconds.\n')
 
     # Measure how long it takes to estimate PageRank through probabilities
     print("Estimate PageRank through probability distributions:")
@@ -104,13 +111,15 @@ def main():
 
     # Show top 20 pages with their page rank and time it took to compute
     top = sorted(ranking.items(), key=lambda item: item[1], reverse=True)
-    print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
-    print(f'Calculation took {time_probabilistic:.2f} seconds.\n')
+    #print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
+    #print(f'Calculation took {time_probabilistic:.2f} seconds.\n')
 
     # Compare the compute time of the two methods
     speedup = time_stochastic/time_probabilistic
-    print(f'The probabilitic method was {speedup:.0f} times faster.')
+    #print(f'The probabilitic method was {speedup:.0f} times faster.')
 
 
 if __name__ == '__main__':
     main()
+
+#graph = load_graph(open("school_web.txt"))
