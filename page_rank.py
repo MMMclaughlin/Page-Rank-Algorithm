@@ -1,7 +1,8 @@
 import os
 import time
 from progress import Progress
-
+import itertools
+import networkx
 WEB_DATA = os.path.join(os.path.dirname(__file__), 'school_web.txt')
 
 
@@ -35,7 +36,14 @@ def load_graph(fd):
 
 def print_stats(graph):
         """Print number of nodes and edges in the given graph"""
-        raise RuntimeError("This function is not implemented yet.")
+        #does (a,b) count as the same edge as (b,a)? if it does we will make a set of sets of connections.
+        #Then count the lenth of the largest set
+        nodes=0
+        edges=0
+        for key,values in graph.items():
+            edges=edges+len(values)
+            nodes=nodes+1
+        print("there is "+str(nodes)+" nodes "+"and "+str(edges)+" edges")
 
 
 def stochastic_page_rank(graph, n_iter=1000000, n_steps=100):
@@ -70,20 +78,17 @@ def distribution_page_rank(graph, n_iter=100):
     the probability that a random walker is currently on any node.
     """
     raise RuntimeError("This function is not implemented yet.")
-
-
 def main():
-    print("this is main")
     # Load the web structure from file
     web = load_graph(open(WEB_DATA))
 
     # print information about the website
-    print_stats(web)
-
+    print(list(web.keys()))
     # The graph diameter is the length of the longest shortest path
     # between any two nodes. The number of random steps of walkers
     # should be a small multiple of the graph diameter.
-    diameter = 3
+    diameter = networkx.diameter(web)
+    print(diameter)
 
     # Measure how long it takes to estimate PageRank through random walks
     print("Estimate PageRank through random walks:")
