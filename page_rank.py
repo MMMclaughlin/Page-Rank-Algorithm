@@ -3,6 +3,7 @@ import time
 from progress import Progress
 import itertools
 import networkx
+import random
 WEB_DATA = os.path.join(os.path.dirname(__file__), 'school_web.txt')
 
 
@@ -24,14 +25,20 @@ def load_graph(fd):
     """
     # Iterate through the file line by line
     websites={}#dictionary of websites: Key is a link, value is a list of links.
+    graph=networkx.DiGraph()
     for line in fd:
         # And split each line into two URLs
         node, target = line.split()
-        if node not in websites.keys():#this checks to add the node to the dictionary
-            websites[node]=[target]
+        if not graph.has_node(node):#this checks to add the node to the dictionary
+            graph.add_node(node)
+            graph.add_edge(node,target)
         else:#if the node exists add the next value to the list of values
-            (websites[node].append(target))
-    return websites#return the dictionary of connections
+            graph.add_edge(node, target)
+    print("graph created")
+    for i in range(0,len(graph.nodes)):
+        print(list(graph.nodes)[i])
+        print(len(graph.edges(list(graph.nodes)[i])))
+    return graph#return the dictionary of connections
 
 
 def print_stats(graph):
@@ -45,8 +52,16 @@ def print_stats(graph):
             nodes=nodes+1
         print("there is "+str(nodes)+" nodes "+"and "+str(edges)+" edges")
 
+def randomnodechooser(graph):
+    RandomNodenumber = random.randint(0, int(len(graph.nodes)-1))
 
-def stochastic_page_rank(graph, n_iter=1000000, n_steps=100):
+    try:
+        node = list(graph.nodes)[RandomNodenumber]
+    except:
+        print("this is random number",RandomNodenumber)
+        print("this is the amount of nodes",len(list(graph.nodes)))
+    return node
+def stochastic_page_rank(graph,node, n_iter=1000000, n_steps=100):
     """Stochastic PageRank estimation
 
     Parameters:
@@ -61,7 +76,31 @@ def stochastic_page_rank(graph, n_iter=1000000, n_steps=100):
     a random walk that starts on a random node will after n_steps end
     on each node of the given graph.
     """
-    raise RuntimeError("This function is not implemented yet.")
+    Nodecount={}
+    print(graph.edges)
+    time.sleep(4)
+    for i in range(0,n_iter):
+        for x in range(0,n_steps):
+            RandomNodenumber = random.randint(0, int(len(graph.edges(node)))-1)
+            node = (list(graph.edges(node))[RandomNodenumber])[1]
+        if node not in Nodecount:
+            print(node)
+            Nodecount[node]=1
+        else:
+            Nodecount[node]=Nodecount[node]+1
+
+        node = randomnodechooser(graph)
+    return Nodecount
+
+    # if n_iter!=0:
+    #     if n_steps!=0:
+    #         RandomNodenumber = random.randint(0, int(len(graph.edges(node))))
+    #         node = list(graph.edges(node))[RandomNodenumber]
+    #         stochastic_page_rank(graph,node,n_iter,n_steps-1)
+    #         print(node)
+    #     else:
+    #         node=randomnodechooser(graph)
+    #         stochastic_page_rank(graph, node, n_iter-1, n_steps)
 
 
 def distribution_page_rank(graph, n_iter=100):
@@ -83,7 +122,6 @@ def main():
     web = load_graph(open(WEB_DATA))
 
     # print information about the website
-    print(list(web.keys()))
     # The graph diameter is the length of the longest shortest path
     # between any two nodes. The number of random steps of walkers
     # should be a small multiple of the graph diameter.
@@ -93,11 +131,19 @@ def main():
     # Measure how long it takes to estimate PageRank through random walks
     print("Estimate PageRank through random walks:")
     n_iter = len(web)**2
+    print(n_iter)
     n_steps = 2*diameter
     start = time.time()
-    ranking = stochastic_page_rank(web, n_iter, n_steps)
+    node=randomnodechooser(web)
+    ranking = stochastic_page_rank(web,node, n_iter, n_steps)
+    Outputfile=open("pagerank.txt","w")
+    for Items in sorted(ranking,key=ranking.get,reverse=True):
+        Outputfile.write(Items+" "+str(ranking[Items])+"\n")
+    print("finished")
     stop = time.time()
     time_stochastic = stop - start
+    print(time_stochastic)
+    return
 
     # Show top 20 pages with their page rank and time it took to compute
     top = sorted(ranking.items(), key=lambda item: item[1], reverse=True)
