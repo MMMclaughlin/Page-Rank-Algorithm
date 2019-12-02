@@ -5,6 +5,7 @@ import itertools
 import networkx
 import random
 from progress import Progress
+import matplotlib.pyplot as plt
 WEB_DATA = os.path.join(os.path.dirname(__file__), 'school_web.txt')
 
 
@@ -115,6 +116,7 @@ def distribution_page_rank(graph, n_iter=100):
                 CurrentEdges=list(graph.edges(Currentnode))
                 next_prob[CurrentEdges[edges][1]]+=p
         node_prob=next_prob
+    prog.finish()
     return node_prob
 
 
@@ -165,7 +167,9 @@ def main():
     # Compare the compute time of the two methods
     speedup = time_stochastic/time_probabilistic
     print(f'The probabilitic method was {speedup:.0f} times faster.')
-
+    visual=networkx.draw(web)
+    plt.savefig('fig.png', bbox_inches='tight')
+    plt.show()
 
 if __name__ == '__main__':
     main()
