@@ -115,9 +115,14 @@ def distribution_page_rank(graph, n_iter=10):
         for count in range(0,len(graph.nodes)):
             next_prob[list(graph.nodes)[count]] = 0
         for node in range(0,len((graph.nodes))):
-            p=dict[list(graph.nodes)[node]]/len(graph.edges(list(graph.nodes)[node]))
-            for edges in (0,len(graph.edges(list(graph.nodes)[node]))-1):
-                next_prob[list(graph.edges(list(graph.nodes)[node]))[edges][1]]=next_prob[list(graph.edges(list(graph.nodes)[node]))[edges][1]]+p
+            print("this is node",node)
+            CurrentNode=list(graph.nodes)[node]
+            print("this is dict[currentnode]",dict[CurrentNode])
+            p=dict[CurrentNode]/len(graph.edges(CurrentNode))
+            print("this is p",p)
+            for edges in (0,len(graph.edges(CurrentNode))-1) :
+                CurrentEdges=list(graph.edges(CurrentNode))
+                next_prob[CurrentEdges[edges][1]]=next_prob[CurrentEdges[edges][1]]+p
         print("before",dict)
         dict=next_prob
         print("after",dict)
@@ -137,22 +142,22 @@ def main():
     print(diameter)
 
     # #Measure how long it takes to estimate PageRank through random walks
-    # print("Estimate PageRank through random walks:")
-    # n_iter = len(web)**2
-    # n_steps = 2*diameter
-    # start = time.time()
-    # node=randomnodechooser(web)
-    # ranking = stochastic_page_rank(web,node, n_iter, n_steps)
-    # Outputfile=open("pagerank.txt","w")
-    # for Items in sorted(ranking,key=ranking.get,reverse=True):
-    #     Outputfile.write(Items+" "+str(ranking[Items])+"\n")
-    # stop = time.time()
-    # time_stochastic = stop - start
+    print("Estimate PageRank through random walks:")
+    n_iter = len(web)**2
+    n_steps = 2*diameter
+    start = time.time()
+    node=randomnodechooser(web)
+    ranking = stochastic_page_rank(web,node, n_iter, n_steps)
+    Outputfile=open("pagerank.txt","w")
+    for Items in sorted(ranking,key=ranking.get,reverse=True):
+        Outputfile.write(Items+" "+str(ranking[Items])+"\n")
+    stop = time.time()
+    time_stochastic = stop - start
 
     # Show top 20 pages with their page rank and time it took to compute
-    # top = sorted(ranking.items(), key=lambda item: item[1], reverse=True)
-    # print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
-    # print(f'Calculation took {time_stochastic:.2f} seconds.\n')
+    top = sorted(ranking.items(), key=lambda item: item[1], reverse=True)
+    print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
+    print(f'Calculation took {time_stochastic:.2f} seconds.\n')
 
     # Measure how long it takes to estimate PageRank through probabilities
     print("Estimate PageRank through probability distributions:")
@@ -168,8 +173,8 @@ def main():
     print(f'Calculation took {time_probabilistic:.2f} seconds.\n')
 
     # Compare the compute time of the two methods
-    #speedup = time_stochastic/time_probabilistic
-    #print(f'The probabilitic method was {speedup:.0f} times faster.')
+    speedup = time_stochastic/time_probabilistic
+    print(f'The probabilitic method was {speedup:.0f} times faster.')
 
 
 if __name__ == '__main__':
