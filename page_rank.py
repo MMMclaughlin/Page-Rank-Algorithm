@@ -72,7 +72,7 @@ def stochastic_page_rank(graph,node, n_iter=1000000, n_steps=100):
     Nodecount={}
     prog = Progress(n_iter, "Permforming stochastic page rank. This may take while")#setting up progress bar
     for nodes in range(0,len(list(graph.nodes))):#loop through all the nodes
-        Nodecount[nodes]=0#set each node in the dictionary with a value of 0
+        Nodecount[list(graph.nodes)[nodes]]=0#set each node in the dictionary with a value of 0
     for i in range(0,n_iter):
         prog += 1#progress bar
         prog.show()
@@ -141,17 +141,17 @@ def main():
     start = time.time()
     node=randomnodechooser(web)
     ranking1 = stochastic_page_rank(web,node, n_iter, n_steps)
+    print(sum(ranking1.values())*100)
     Outputfile=open("pagerank.txt","w")
     for Items in sorted(ranking1,key=ranking1.get,reverse=True):
         Outputfile.write(str(Items)+" "+str(ranking1[Items])+"\n")
     stop = time.time()
     time_stochastic = stop - start
 
-    #Show top 20 pages with their page rank and time it took to compute
+    #Show top 20 pages with their page rank and time it took to compu te
     top = sorted(ranking1.items(), key=lambda item: item[1], reverse=True)
     print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
     print(f'Calculation took {time_stochastic:.2f} seconds.\n')
-    time.sleep(3)
     #Measure how long it takes to estimate PageRank through probabilities
     print("Estimate PageRank through probability distributions:")
     n_iter = 2*diameter
@@ -165,7 +165,7 @@ def main():
     top = sorted(ranking2.items(), key=lambda item: item[1], reverse=True)
     print('\n'.join(f'{100*v:.2f}\t{k}' for k,v in top[:20]))
     print(f'Calculation took {time_probabilistic:.2f} seconds.\n')
-
+    print(sum(ranking2.values())*100)
     # Compare the compute time of the two methods
     speedup = time_stochastic/time_probabilistic
     print(f'The probabilitic method was {speedup:.0f} times faster.')
