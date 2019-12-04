@@ -49,7 +49,7 @@ def print_stats(graph):
             edges=edges+len(values)
             nodes=nodes+1
 
-def randomnodechooser(graph):
+def randomnodechooser(graph):#Randomly select a node
     RandomNodenumber = random.randint(0, int(len(graph.nodes)-1))
     node = list(graph.nodes)[RandomNodenumber]
     return node
@@ -76,12 +76,12 @@ def stochastic_page_rank(graph,node, n_iter=1000000, n_steps=100):
     for i in range(0,n_iter):
         prog += 1#progress bar
         prog.show()
-        node = randomnodechooser(graph)#get a random node
+        node = randomnodechooser(graph)
         for x in range(0,n_steps):#loop for n amount of random links to follow per random node we start from
             RandomNodenumber = random.randint(0, int(len(graph.edges(node)))-1)#seelect a random number
             # use random number to select a random index in the list of edges from the randomnode
             node = (list(graph.edges(node))[RandomNodenumber])[1]
-        Nodecount[node]=Nodecount[node]+(1/n_iter)#Increase the finnally landed node by 1/n iter.
+        Nodecount[node]+=(1/n_iter)#Increase the finnally landed node by 1/n iter.
         ## The most common will be largest
     prog.finish()
     return Nodecount
@@ -124,6 +124,14 @@ def distribution_page_rank(graph, n_iter=100):
 
 
 def main():
+    """Main function to run other functions
+
+    No Parameters:
+
+    No Returned Values:
+
+    This function handles calling both page ranks aswell as comparing the times to complete each of them
+    """
     # Load the web structure from file
     web = load_graph(open(WEB_DATA))
 
